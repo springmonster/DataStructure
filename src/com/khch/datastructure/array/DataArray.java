@@ -28,6 +28,7 @@ public class DataArray {
 
     /**
      * 无扩容，如果容量不够则不允许插入
+     *
      * @param value
      * @return
      */
@@ -43,6 +44,7 @@ public class DataArray {
 
     /**
      * 只删除匹配的第一个数据
+     *
      * @param value
      */
     public void delete(int value) {
@@ -66,5 +68,37 @@ public class DataArray {
             System.out.print(array[i] + " ");
         }
         System.out.println();
+    }
+
+    public int getMax() {
+        if (elementCount == 0) {
+            return -1;
+        }
+        int max = array[0];
+        for (int i = 1; i < elementCount; i++) {
+            if (array[i] > max) {
+                max = array[i];
+            }
+        }
+        return max;
+    }
+
+    public void removeMax() {
+        if (elementCount == 0) {
+            return;
+        }
+        int max = array[0];
+        int index = 0;
+        for (int i = 1; i < elementCount; i++) {
+            if (array[i] > max) {
+                max = array[i];
+                index = i;
+            }
+        }
+
+        for (int j = index; j < elementCount; j++) {
+            array[j] = array[j + 1];
+        }
+        elementCount--;
     }
 }
