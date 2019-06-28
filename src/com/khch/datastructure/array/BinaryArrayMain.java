@@ -38,5 +38,26 @@ public class BinaryArrayMain {
         isFind = binaryArray.find(100);
 
         System.out.println(isFind);
+
+        System.out.println("------------------------");
+        BinaryArray binaryArray1 = new BinaryArray();
+        binaryArray1.insert(30);
+        binaryArray1.insert(20);
+        binaryArray1.insert(10);
+        binaryArray1.insert(0);
+        binaryArray1.display();
+
+        BinaryArray binaryArray2 = new BinaryArray();
+        binaryArray2.insert(35);
+        binaryArray2.insert(25);
+        binaryArray2.insert(15);
+        binaryArray2.insert(5);
+        binaryArray2.insert(60);
+        binaryArray2.insert(3);
+        binaryArray2.insert(9);
+        binaryArray2.display();
+
+        binaryArray.merge(binaryArray1, binaryArray2);
+        binaryArray.display();
     }
 }
