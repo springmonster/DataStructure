@@ -9,12 +9,12 @@ public class BubbleSort {
     }
 
     private static void bubbleSort() {
-//        for (int out = array.length; out > 1; out--) {
+//        for (int out = innerArray.length; out > 1; out--) {
 //            for (int in = 0; in < out - 1; in++) {
-//                if (array[in] > array[in + 1]) {
-//                    int temp = array[in];
-//                    array[in] = array[in + 1];
-//                    array[in + 1] = temp;
+//                if (innerArray[in] > innerArray[in + 1]) {
+//                    int temp = innerArray[in];
+//                    innerArray[in] = innerArray[in + 1];
+//                    innerArray[in + 1] = temp;
 //                }
 //            }
 //        }

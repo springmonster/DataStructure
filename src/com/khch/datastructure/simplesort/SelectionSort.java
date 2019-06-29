@@ -9,20 +9,20 @@ public class SelectionSort {
     }
 
     private static void selectionSort() {
-//        for (int out = array.length - 1; out >= 1; out--) {
-//            int max = array[0];
+//        for (int out = innerArray.length - 1; out >= 1; out--) {
+//            int max = innerArray[0];
 //            int maxIndex = 0;
 //
 //            for (int in = 1; in <= out; in++) {
-//                if (array[in] > max) {
-//                    max = array[in];
+//                if (innerArray[in] > max) {
+//                    max = innerArray[in];
 //                    maxIndex = in;
 //                }
 //            }
 //
-//            int temp = array[maxIndex];
-//            array[maxIndex] = array[out];
-//            array[out] = temp;
+//            int temp = innerArray[maxIndex];
+//            innerArray[maxIndex] = innerArray[out];
+//            innerArray[out] = temp;
 //        }
 
         for (int out = 0; out < array.length - 1; out++) {
