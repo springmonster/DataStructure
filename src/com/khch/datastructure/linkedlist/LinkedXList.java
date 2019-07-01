@@ -38,9 +38,4 @@ public class LinkedXList {
         System.out.println();
         System.out.println("--------------------------");
     }
-
-    class NodeX {
-        int value;
-        NodeX next;
-    }
 }
