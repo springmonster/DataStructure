@@ -1,4 +1,4 @@
-package com.khch.datastructure.AdvancedSort;
+package com.khch.datastructure.advancedsort;
 
 public class ShellSort {
     private static int[] array = new int[]{54, 26, 93, 17, 77, 31, 44, 55, 20};

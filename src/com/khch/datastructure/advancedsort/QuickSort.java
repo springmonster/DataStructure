@@ -1,4 +1,4 @@
-package com.khch.datastructure.AdvancedSort;
+package com.khch.datastructure.advancedsort;
 
 /**
  * 快速排序的优化

@@ -1,4 +1,4 @@
-package com.khch.datastructure.AdvancedSort;
+package com.khch.datastructure.advancedsort;
 
 public class HeapSort {
     private static int[] array = new int[]{54, 26, 93, 17, 77, 31, 60, 55, 20};

@@ -1,4 +1,4 @@
-package com.khch.datastructure.AdvancedSort;
+package com.khch.datastructure.advancedsort;
 
 /**
  * 基数排序
