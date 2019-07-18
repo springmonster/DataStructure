@@ -45,14 +45,15 @@ public class BinarySearchTree {
         }
         BSTreeNode needDeleteNode = null;
         BSTreeNode currentNode = root;
-        BSTreeNode needDeleteParentNode = root;
+        BSTreeNode needDeleteNodeParent = root;
         boolean isLeft = false;
         while (currentNode != null) {
-            needDeleteParentNode = currentNode;
             if (value < currentNode.value) {
+                needDeleteNodeParent = currentNode;
                 currentNode = currentNode.leftChild;
                 isLeft = true;
             } else if (value > currentNode.value) {
+                needDeleteNodeParent = currentNode;
                 currentNode = currentNode.rightChild;
                 isLeft = false;
             } else {
@@ -65,30 +66,30 @@ public class BinarySearchTree {
             // 如果没有左右孩子
             if (needDeleteNode.leftChild == null && needDeleteNode.rightChild == null) {
                 if (isLeft) {
-                    needDeleteParentNode.leftChild = null;
+                    needDeleteNodeParent.leftChild = null;
                 } else {
-                    needDeleteParentNode.rightChild = null;
+                    needDeleteNodeParent.rightChild = null;
                 }
             }
             // 如果只有右孩子
             if (needDeleteNode.leftChild == null && needDeleteNode.rightChild != null) {
                 if (isLeft) {
-                    needDeleteParentNode.leftChild = needDeleteNode.rightChild;
+                    needDeleteNodeParent.leftChild = needDeleteNode.rightChild;
                 } else {
-                    needDeleteParentNode.rightChild = needDeleteNode.rightChild;
+                    needDeleteNodeParent.rightChild = needDeleteNode.rightChild;
                 }
             }
             // 如果只有左孩子
             if (needDeleteNode.leftChild != null && needDeleteNode.rightChild == null) {
                 if (isLeft) {
-                    needDeleteParentNode.leftChild = needDeleteNode.leftChild;
+                    needDeleteNodeParent.leftChild = needDeleteNode.leftChild;
                 } else {
-                    needDeleteParentNode.rightChild = needDeleteNode.leftChild;
+                    needDeleteNodeParent.rightChild = needDeleteNode.leftChild;
                 }
             }
             // 如果左右孩子都存在
             if (needDeleteNode.leftChild != null && needDeleteNode.rightChild != null) {
-
+                deleteIfTwoChildrenExist(needDeleteNode, needDeleteNodeParent, isLeft);
             }
         }
     }
@@ -118,10 +119,10 @@ public class BinarySearchTree {
             pre(root);
             System.out.println();
             System.out.println("------------前序遍历--------------");
-            System.out.println("------------中序遍历--------------");
-            mid(root);
-            System.out.println();
-            System.out.println("------------中序遍历--------------");
+//            System.out.println("------------中序遍历--------------");
+//            mid(root);
+//            System.out.println();
+//            System.out.println("------------中序遍历--------------");
         }
     }
 
@@ -143,5 +144,41 @@ public class BinarySearchTree {
             System.out.print(bsTreeNode.value + " ");
             mid(bsTreeNode.rightChild);
         }
+    }
+
+    private BSTreeNode deleteIfTwoChildrenExist(BSTreeNode needDeleteNode, BSTreeNode needDeleteNodeParent, boolean isLeft) {
+        BSTreeNode currentNode = needDeleteNode;
+        BSTreeNode currentNodeParent = needDeleteNode;
+        BSTreeNode currentNodeParentParent = needDeleteNode;
+
+        currentNode = currentNode.rightChild;
+        if (currentNode.leftChild == null) {
+            currentNode.leftChild = needDeleteNode.leftChild;
+            if (isLeft) {
+                needDeleteNodeParent.leftChild = currentNode;
+            } else {
+                needDeleteNodeParent.rightChild = currentNode;
+            }
+        } else {
+            while (currentNode != null) {
+                currentNodeParentParent = currentNodeParent;
+                currentNodeParent = currentNode;
+                currentNode = currentNode.leftChild;
+            }
+
+            currentNodeParentParent.leftChild = currentNodeParent.rightChild;
+            currentNodeParent.leftChild = needDeleteNode.leftChild;
+            currentNodeParent.rightChild = needDeleteNode.rightChild;
+            if (needDeleteNode != root) {
+                if (isLeft) {
+                    needDeleteNodeParent.leftChild = currentNodeParent;
+                } else {
+                    needDeleteNodeParent.rightChild = currentNodeParent;
+                }
+            } else {
+                root = currentNodeParent;
+            }
+        }
+        return null;
     }
 }
