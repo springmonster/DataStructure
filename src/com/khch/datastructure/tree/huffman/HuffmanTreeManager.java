@@ -1,61 +1,52 @@
 package com.khch.datastructure.tree.huffman;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class HuffmanTreeManager {
 
     public static void main(String[] args) {
-        List<HuffmanNode> list = createList();
+        Map<String, Integer> map = new TreeMap<>();
+
+        map.put("a", 5);
+        map.put("b", 29);
+        map.put("c", 7);
+        map.put("d", 8);
+        map.put("e", 14);
+        map.put("f", 23);
+        map.put("g", 3);
+        map.put("h", 11);
+
+        LinkedList<HuffmanNode> list = createList(map);
 
         insertSortList(list);
 
         display(list);
+
+        HuffmanNode root = adjustArray(list);
+
+        displayTree(root);
+
+        String input = "abcdefgh";
+
+        String result = encodeString(root, input, map);
+
+        System.out.println(String.format("Result is %s", result));
     }
 
-    private static List<HuffmanNode> createList() {
-        HuffmanNode hNode1 = new HuffmanNode();
-        hNode1.value = 'a';
-        hNode1.weight = 5;
+    private static LinkedList<HuffmanNode> createList(Map<String, Integer> map) {
 
-        HuffmanNode hNode2 = new HuffmanNode();
-        hNode2.value = 'b';
-        hNode2.weight = 29;
+        LinkedList<HuffmanNode> array = new LinkedList();
 
-        HuffmanNode hNode3 = new HuffmanNode();
-        hNode3.value = 'c';
-        hNode3.weight = 7;
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            HuffmanNode huffmanNode = new HuffmanNode();
+            huffmanNode.value = entry.getKey();
+            huffmanNode.weight = entry.getValue();
 
-        HuffmanNode hNode4 = new HuffmanNode();
-        hNode4.value = 'd';
-        hNode4.weight = 8;
-
-        HuffmanNode hNode5 = new HuffmanNode();
-        hNode5.value = 'e';
-        hNode5.weight = 14;
-
-        HuffmanNode hNode6 = new HuffmanNode();
-        hNode6.value = 'f';
-        hNode6.weight = 23;
-
-        HuffmanNode hNode7 = new HuffmanNode();
-        hNode7.value = 'g';
-        hNode7.weight = 3;
-
-        HuffmanNode hNode8 = new HuffmanNode();
-        hNode8.value = 'h';
-        hNode8.weight = 11;
-
-        List<HuffmanNode> array = new ArrayList();
-
-        array.add(hNode1);
-        array.add(hNode2);
-        array.add(hNode3);
-        array.add(hNode4);
-        array.add(hNode5);
-        array.add(hNode6);
-        array.add(hNode7);
-        array.add(hNode8);
+            array.add(huffmanNode);
+        }
 
         return array;
     }
@@ -80,11 +71,76 @@ public class HuffmanTreeManager {
     private static void display(List<HuffmanNode> list) {
         System.out.println();
         for (HuffmanNode item : list) {
-            System.out.print(String.format("value is %c and weight is %d \n", item.value, item.weight));
+            System.out.print(String.format("value is %s and weight is %d \n", item.value, item.weight));
         }
     }
 
-    private static void adjustArray(List<HuffmanNode> list) {
+    private static HuffmanNode adjustArray(LinkedList<HuffmanNode> list) {
+        while (list.size() >= 2) {
+            HuffmanNode first = list.get(0);
+            HuffmanNode second = list.get(1);
 
+            list.remove(0);
+            list.remove(0);
+
+            HuffmanNode newNode = new HuffmanNode();
+            newNode.leftChild = first;
+            newNode.rightChild = second;
+            newNode.weight = first.weight + second.weight;
+
+            first.parent = newNode;
+            first.isLeft = true;
+
+            second.parent = newNode;
+            second.isLeft = false;
+
+            list.addFirst(newNode);
+
+            insertSortList(list);
+        }
+
+        return list.get(0);
+    }
+
+    private static void displayTree(HuffmanNode node) {
+        if (node == null) {
+            return;
+        }
+        System.out.print(node.value + " ");
+        displayTree(node.leftChild);
+        displayTree(node.rightChild);
+    }
+
+    private static String encodeString(HuffmanNode root, String input, Map<String, Integer> map) {
+        System.out.println();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < input.length(); i++) {
+            HuffmanNode currentNode = root;
+            findValue(String.valueOf(input.charAt(i)), map, stringBuilder, currentNode);
+        }
+        return stringBuilder.toString();
+    }
+
+    private static void findValue(String input, Map<String, Integer> map, StringBuilder stringBuilder, HuffmanNode currentNode) {
+        if (currentNode == null) {
+            return;
+        }
+        if (map.get(input) == currentNode.weight) {
+            StringBuilder eachStringBuilder = new StringBuilder();
+            while (currentNode.parent != null) {
+                if (currentNode.isLeft) {
+                    eachStringBuilder.insert(0, 0);
+                } else {
+                    eachStringBuilder.insert(0, 1);
+                }
+                currentNode = currentNode.parent;
+            }
+            System.out.println(String.format("each node encode is %s", eachStringBuilder.toString()));
+            stringBuilder.append(eachStringBuilder.toString());
+        } else {
+            findValue(input, map, stringBuilder, currentNode.leftChild);
+            findValue(input, map, stringBuilder, currentNode.rightChild);
+        }
     }
 }
