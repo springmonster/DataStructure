@@ -1,39 +1,64 @@
 package com.khch.datastructure.tree.huffman;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class HuffmanTreeManager {
+    private static Map<String, String> huffmanMap = new HashMap<>();
 
     public static void main(String[] args) {
-        Map<String, Integer> map = new TreeMap<>();
+        // 构建原始的带权重的字符串哈希表
+        Map<String, Integer> map = createOriginalStringMap();
 
-        map.put("a", 5);
-        map.put("b", 29);
-        map.put("c", 7);
-        map.put("d", 8);
-        map.put("e", 14);
-        map.put("f", 23);
-        map.put("g", 3);
-        map.put("h", 11);
-
+        // 构建链表
         LinkedList<HuffmanNode> list = createList(map);
 
-        insertSortList(list);
+        // 排序链表，按照权重从小到大进行排列
+        createSortedLinkedList(list);
 
         display(list);
 
-        HuffmanNode root = adjustArray(list);
+        // 将权重链表转换为树
+        HuffmanNode root = adjustLinkedListToTree(list);
 
         displayTree(root);
 
-        String input = "abcdefgh";
+        // 进行哈夫曼编码 ----------------------------------------------
+        String input = "abcdefg";
 
-        String result = encodeString(root, input, map);
+        encodeString(root, "");
 
-        System.out.println(String.format("Result is %s", result));
+        System.out.println("\n--- 进行哈夫曼编码 ---\n");
+        displayTreeWithHuffmanCode(root);
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < input.length(); i++) {
+            String charString = String.valueOf(input.charAt(i));
+            stringBuilder.append(huffmanMap.get(charString));
+        }
+
+        System.out.println();
+        System.out.println(String.format("原始字符串是%s，编码后是%s", input, stringBuilder.toString()));
+        System.out.println("\n--- 进行哈夫曼编码 ---\n");
+        // 进行哈夫曼编码 ----------------------------------------------
+
+        // 进行哈夫曼解码 ----------------------------------------------
+        decodeString(stringBuilder.toString(), root);
+        // 进行哈夫曼解码 ----------------------------------------------
+    }
+
+    private static Map<String, Integer> createOriginalStringMap() {
+        Map<String, Integer> map = new TreeMap<>();
+
+        map.put("a", 5);
+        map.put("b", 3);
+        map.put("c", 7);
+        map.put("d", 12);
+        map.put("e", 1);
+        map.put("f", 6);
+        map.put("g", 9);
+
+        return map;
     }
 
     private static LinkedList<HuffmanNode> createList(Map<String, Integer> map) {
@@ -51,7 +76,7 @@ public class HuffmanTreeManager {
         return array;
     }
 
-    private static void insertSortList(List<HuffmanNode> array) {
+    private static void createSortedLinkedList(List<HuffmanNode> array) {
         // 采用插入排序
         for (int i = 1; i < array.size(); i++) {
             HuffmanNode tempNode = array.get(i);
@@ -75,7 +100,7 @@ public class HuffmanTreeManager {
         }
     }
 
-    private static HuffmanNode adjustArray(LinkedList<HuffmanNode> list) {
+    private static HuffmanNode adjustLinkedListToTree(LinkedList<HuffmanNode> list) {
         while (list.size() >= 2) {
             HuffmanNode first = list.get(0);
             HuffmanNode second = list.get(1);
@@ -96,7 +121,7 @@ public class HuffmanTreeManager {
 
             list.addFirst(newNode);
 
-            insertSortList(list);
+            createSortedLinkedList(list);
         }
 
         return list.get(0);
@@ -111,36 +136,41 @@ public class HuffmanTreeManager {
         displayTree(node.rightChild);
     }
 
-    private static String encodeString(HuffmanNode root, String input, Map<String, Integer> map) {
-        System.out.println();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < input.length(); i++) {
-            HuffmanNode currentNode = root;
-            findValue(String.valueOf(input.charAt(i)), map, stringBuilder, currentNode);
+    private static void encodeString(HuffmanNode node, String huffmanCode) {
+        if (node.leftChild == null && node.rightChild == null) {
+            node.huffmanCode = huffmanCode;
+            huffmanMap.put(node.value, node.huffmanCode);
+        } else {
+            encodeString(node.leftChild, huffmanCode + "0");
+            encodeString(node.rightChild, huffmanCode + "1");
         }
-        return stringBuilder.toString();
     }
 
-    private static void findValue(String input, Map<String, Integer> map, StringBuilder stringBuilder, HuffmanNode currentNode) {
-        if (currentNode == null) {
+    private static void displayTreeWithHuffmanCode(HuffmanNode node) {
+        if (node == null) {
             return;
         }
-        if (map.get(input) == currentNode.weight) {
-            StringBuilder eachStringBuilder = new StringBuilder();
-            while (currentNode.parent != null) {
-                if (currentNode.isLeft) {
-                    eachStringBuilder.insert(0, 0);
-                } else {
-                    eachStringBuilder.insert(0, 1);
-                }
-                currentNode = currentNode.parent;
+        System.out.print(node.huffmanCode + " ");
+        displayTreeWithHuffmanCode(node.leftChild);
+        displayTreeWithHuffmanCode(node.rightChild);
+    }
+
+    private static void decodeString(String encodeString, HuffmanNode root) {
+        System.out.println("\n--- 进行哈夫曼解码 ---\n");
+        HuffmanNode current = root;
+
+        for (int i = 0; i < encodeString.length(); i++) {
+            if (String.valueOf(encodeString.charAt(i)).equalsIgnoreCase("0")) {
+                current = current.leftChild;
+            } else {
+                current = current.rightChild;
             }
-            System.out.println(String.format("each node encode is %s", eachStringBuilder.toString()));
-            stringBuilder.append(eachStringBuilder.toString());
-        } else {
-            findValue(input, map, stringBuilder, currentNode.leftChild);
-            findValue(input, map, stringBuilder, currentNode.rightChild);
+
+            if (current.leftChild == null && current.rightChild == null) {
+                System.out.print(current.value + " ");
+                current = root;
+            }
         }
+        System.out.println("\n--- 进行哈夫曼解码 ---\n");
     }
 }

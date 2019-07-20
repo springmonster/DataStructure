@@ -7,4 +7,5 @@ public class HuffmanNode {
     int weight;
     String value;
     boolean isLeft;
+    String huffmanCode;
 }
