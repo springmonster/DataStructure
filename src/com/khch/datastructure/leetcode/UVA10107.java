@@ -1,4 +1,4 @@
-package com.khch.datastructure.simplesort;
+package com.khch.datastructure.leetcode;
 
 /**
  * 不断的输入整数，输出中值，如果中间有两个数，输出他们平均值的整数部分。
