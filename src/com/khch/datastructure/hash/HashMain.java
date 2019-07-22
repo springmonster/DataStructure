@@ -27,5 +27,13 @@ public class HashMain {
         System.out.println(hashOpenAddress.getHashAgain(1));
         System.out.println(hashOpenAddress.getHashAgain(12));
         System.out.println(hashOpenAddress.getHashAgain(23));
+
+        HashLinkedList hashLinkedList = new HashLinkedList();
+        hashLinkedList.put(1, "a");
+        hashLinkedList.put(12, "b");
+        hashLinkedList.put(23, "c");
+        System.out.println(hashLinkedList.get(1));
+        System.out.println(hashLinkedList.get(12));
+        System.out.println(hashLinkedList.get(23));
     }
 }
