@@ -7,8 +7,6 @@ public class AVLTree {
         if (root == null) {
             root = avlNode;
         }
-
-
     }
 
     /**
