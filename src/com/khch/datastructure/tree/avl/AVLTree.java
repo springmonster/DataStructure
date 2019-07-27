@@ -1,17 +1,11 @@
 package com.khch.datastructure.tree.avl;
 
 public class AVLTree {
-    public static final int LEFT_HIGH = 1;
-    public static final int EQUAL_HIGH = 0;
-    public static final int RIGHT_HIGH = -1;
 
     private AVLNode root;
 
-    public void insert(AVLNode avlNode) {
-        if (root == null) {
-            root = avlNode;
-        }
-    }
+    // 树是否长高
+    private boolean isTaller;
 
     /**
      * 右旋处理
@@ -23,7 +17,7 @@ public class AVLTree {
      * /
      * node
      *
-     * @param father
+     * @param father AVLNode
      */
     private AVLNode rightRotate(AVLNode father) {
         AVLNode child = father.left;
@@ -36,7 +30,7 @@ public class AVLTree {
     /**
      * 左旋处理
      *
-     * @param father
+     * @param father AVLNode
      */
     private AVLNode leftRotate(AVLNode father) {
         AVLNode child = father.right;
@@ -51,41 +45,41 @@ public class AVLTree {
      * balanceFactor为1时，左子树比右子树高
      * balanceFactor为-1时，左子树比右子树矮
      *
-     * @param father
+     * @param father AVLNode
      */
-    private void leftBalance(AVLNode father) {
-        AVLNode needToRotateNode = father.left;
+    private AVLNode leftBalance(AVLNode father) {
+        switch (father.left.balanceFactor) {
+            case 1:
+                // 说明插入在了左孩子的左子树上，需要进行右旋
+                father.balanceFactor = 0;
+                father.left.balanceFactor = 0;
+                return rightRotate(father);
+            case -1:
+                // 说明插入在了左孩子的右子树上，需要双旋处理
+                // 先进行左旋，再进行右旋
+                AVLNode leftRight = father.left.right;
 
-        // 说明插入在了左孩子的左子树上，需要进行右旋
-        if (needToRotateNode.balanceFactor == 1) {
-            father.balanceFactor = EQUAL_HIGH;
-            needToRotateNode.balanceFactor = EQUAL_HIGH;
-            rightRotate(father);
-        }
-        // 说明插入在了左孩子的右子树上，需要双旋处理
-        // 先进行左旋，再进行右旋
-        if (needToRotateNode.balanceFactor == RIGHT_HIGH) {
-            AVLNode rightChild = needToRotateNode.right;
-
-            switch (rightChild.balanceFactor) {
-                case EQUAL_HIGH:
-                    father.balanceFactor = EQUAL_HIGH;
-                    needToRotateNode.balanceFactor = EQUAL_HIGH;
-                    break;
-                case LEFT_HIGH:
-                    needToRotateNode.balanceFactor = EQUAL_HIGH;
-                    father.balanceFactor = RIGHT_HIGH;
-                    break;
-                case RIGHT_HIGH:
-                    needToRotateNode.balanceFactor = LEFT_HIGH;
-                    father.balanceFactor = EQUAL_HIGH;
-                    break;
-                default:
-                    break;
-            }
-            rightChild.balanceFactor = EQUAL_HIGH;
-            father = leftRotate(father);
-            father = rightRotate(father);
+                switch (leftRight.balanceFactor) {
+                    case 0:
+                        father.balanceFactor = 0;
+                        father.left.balanceFactor = 0;
+                        break;
+                    case 1:
+                        father.left.balanceFactor = 0;
+                        father.balanceFactor = -1;
+                        break;
+                    case -1:
+                        father.left.balanceFactor = 1;
+                        father.balanceFactor = 0;
+                        break;
+                    default:
+                        break;
+                }
+                leftRight.balanceFactor = 0;
+                father.left = leftRotate(father.left);
+                return rightRotate(father);
+            default:
+                return father;
         }
     }
 
@@ -94,41 +88,129 @@ public class AVLTree {
      * balanceFactor为1时，左子树比右子树高
      * balanceFactor为-1时，左子树比右子树矮
      *
-     * @param father
+     * @param father AVLNode
      */
-    private void rightBalance(AVLNode father) {
-        AVLNode needToRotateNode = father.right;
+    private AVLNode rightBalance(AVLNode father) {
+        switch (father.right.balanceFactor) {
+            case -1:
+                // 说明插入在了右孩子的右子树上，需要进行左旋
+                father.balanceFactor = 0;
+                father.right.balanceFactor = 0;
+                return leftRotate(father);
+            case 1:
+                // 说明插入在了右孩子的左子树上，需要双旋处理
+                // 先进行右旋，再进行左旋
+                AVLNode rightLeft = father.right.left;
 
-        // 说明插入在了右孩子的右子树上，需要进行左旋
-        if (needToRotateNode.balanceFactor == RIGHT_HIGH) {
-            father.balanceFactor = EQUAL_HIGH;
-            needToRotateNode.balanceFactor = EQUAL_HIGH;
-            leftRotate(father);
+                switch (rightLeft.balanceFactor) {
+                    case 0:
+                        father.balanceFactor = 0;
+                        father.right.balanceFactor = 0;
+                        break;
+                    case 1:
+                        father.right.balanceFactor = -1;
+                        father.balanceFactor = 0;
+                        break;
+                    case -1:
+                        father.right.balanceFactor = 0;
+                        father.balanceFactor = 1;
+                        break;
+                    default:
+                        break;
+                }
+                rightLeft.balanceFactor = 0;
+                father.right = rightRotate(father.right);
+                return leftRotate(father);
+            default:
+                return father;
         }
-        // 说明插入在了右孩子的左子树上，需要双旋处理
-        // 先进行右旋，再进行左旋
-        if (needToRotateNode.balanceFactor == LEFT_HIGH) {
-            AVLNode leftChild = needToRotateNode.left;
+    }
 
-            switch (leftChild.balanceFactor) {
-                case EQUAL_HIGH:
-                    father.balanceFactor = EQUAL_HIGH;
-                    needToRotateNode.balanceFactor = EQUAL_HIGH;
-                    break;
-                case LEFT_HIGH:
-                    needToRotateNode.balanceFactor = RIGHT_HIGH;
-                    father.balanceFactor = EQUAL_HIGH;
-                    break;
-                case RIGHT_HIGH:
-                    needToRotateNode.balanceFactor = EQUAL_HIGH;
-                    father.balanceFactor = LEFT_HIGH;
-                    break;
-                default:
-                    break;
+    public void insert(int value) {
+        root = insert(root, value);
+    }
+
+    public AVLNode insert(AVLNode tree, int value) {
+        // 如果树是空的（可以认为是root为空，或者左右叶节点为空）
+        if (tree == null) {
+            isTaller = true;
+            return new AVLNode(value);
+        }
+        // 如果树不为空，但是插入的数值已经存在
+        if (tree.value == value) {
+            System.out.println("不能插入相同的数据");
+            isTaller = false;
+            return tree;
+        }
+        // 如果数据小于，则左子树插入
+        if (value < tree.value) {
+            tree.left = insert(tree.left, value);
+            if (isTaller) {
+                switch (tree.balanceFactor) {
+                    // 原本左右树一样高，现在左树变高了
+                    case 0:
+                        isTaller = true;
+                        tree.balanceFactor = 1;
+                        return tree;
+                    // 原本左树比右树高，现在需要进行平衡
+                    case 1:
+                        isTaller = false;
+                        return leftBalance(tree);
+                    // 原本左树比右树低，现在左右树相等了
+                    case -1:
+                        isTaller = false;
+                        tree.balanceFactor = 0;
+                        return tree;
+                }
             }
-            leftChild.balanceFactor = EQUAL_HIGH;
-            father = rightRotate(father);
-            father = leftRotate(father);
+        } else {
+            // 如果数据大于，则右子树插入
+            tree.right = insert(tree.right, value);
+            if (isTaller) {
+                switch (tree.balanceFactor) {
+                    // 原本左右树一样高，现在右树变高了
+                    case 0:
+                        isTaller = true;
+                        tree.balanceFactor = -1;
+                        return tree;
+                    // 原本左树比右树高，现在左右树相等了
+                    case 1:
+                        isTaller = false;
+                        tree.balanceFactor = 0;
+                        return tree;
+                    // 原本左树比右树低，现在需要进行平衡
+                    case -1:
+                        isTaller = false;
+                        return rightBalance(tree);
+                }
+            }
         }
+        return tree;
+    }
+
+    void preOrder() {
+        preOrderDisplay(root);
+    }
+
+    private void preOrderDisplay(AVLNode node) {
+        if (node == null) {
+            return;
+        }
+        System.out.print(node.value + " ");
+        preOrderDisplay(node.left);
+        preOrderDisplay(node.right);
+    }
+
+    void inOrder() {
+        inOrderDisplay(root);
+    }
+
+    private void inOrderDisplay(AVLNode node) {
+        if (node == null) {
+            return;
+        }
+        inOrderDisplay(node.left);
+        System.out.print(node.value + " ");
+        inOrderDisplay(node.right);
     }
 }

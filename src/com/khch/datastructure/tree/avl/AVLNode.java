@@ -5,4 +5,12 @@ public class AVLNode {
     AVLNode right;
     int balanceFactor;
     int value;
+
+    public AVLNode() {
+
+    }
+
+    public AVLNode(int value) {
+        this.value = value;
+    }
 }
