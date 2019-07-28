@@ -1,7 +1,5 @@
 # Data Structure
 
-[TOC]
-
 ## 简单排序
 
 - 冒泡排序
