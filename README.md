@@ -1,5 +1,13 @@
 # Data Structure
 
+## 参考书籍
+
+- [大话数据结构](https://book.douban.com/subject/6424904/) 
+- [数据结构与算法分析 Java语言描述](https://book.douban.com/subject/3351237/)
+- [Java数据结构和算法](https://book.douban.com/subject/1144007/)
+- [算法](https://book.douban.com/subject/10432347/)
+- [算法导论](https://book.douban.com/subject/1885170/)
+
 ## 简单排序
 
 - 冒泡排序
