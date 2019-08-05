@@ -1,8 +1,10 @@
 package com.khch.datastructure.tree.binarysearch;
 
+import java.util.Stack;
+
 public class BinarySearchTree {
 
-    private BSTreeNode root;
+    public BSTreeNode root;
 
     public void insert(int value) {
         BSTreeNode newNode = new BSTreeNode();
@@ -180,5 +182,80 @@ public class BinarySearchTree {
             }
         }
         return null;
+    }
+
+    public void preOrder(BSTreeNode bsTreeNode) {
+        if (bsTreeNode == null) {
+            return;
+        }
+        System.out.print(bsTreeNode.value + " ");
+        preOrder(bsTreeNode.leftChild);
+        preOrder(bsTreeNode.rightChild);
+    }
+
+    public void midOrder(BSTreeNode bsTreeNode) {
+        if (bsTreeNode == null) {
+            return;
+        }
+        midOrder(bsTreeNode.leftChild);
+        System.out.print(bsTreeNode.value + " ");
+        midOrder(bsTreeNode.rightChild);
+    }
+
+    public void posOrder(BSTreeNode bsTreeNode) {
+        if (bsTreeNode == null) {
+            return;
+        }
+        posOrder(bsTreeNode.leftChild);
+        posOrder(bsTreeNode.rightChild);
+        System.out.print(bsTreeNode.value + " ");
+    }
+
+    public void preOrderDFS(BSTreeNode bsTreeNode) {
+        Stack<BSTreeNode> stack = new Stack<>();
+        BSTreeNode currentNode = root;
+        while (currentNode != null || !stack.isEmpty()) {
+            while (currentNode != null) {
+                System.out.print(currentNode.value + " ");
+                stack.push(currentNode);
+                currentNode = currentNode.leftChild;
+            }
+            if (!stack.isEmpty()) {
+                currentNode = stack.pop();
+                currentNode = currentNode.rightChild;
+            }
+        }
+    }
+
+    public void midOrderDFS(BSTreeNode bsTreeNode) {
+        Stack<BSTreeNode> stack = new Stack<>();
+        BSTreeNode currentNode = root;
+        while (currentNode != null || !stack.isEmpty()) {
+            while (currentNode != null) {
+                stack.push(currentNode);
+                currentNode = currentNode.leftChild;
+            }
+            if (!stack.isEmpty()) {
+                currentNode = stack.pop();
+                System.out.print(currentNode.value + " ");
+                currentNode = currentNode.rightChild;
+            }
+        }
+    }
+
+    public void posOrderDFS(BSTreeNode bsTreeNode) {
+//        Stack<BSTreeNode> stack = new Stack<>();
+//        BSTreeNode currentNode = root;
+//        while (currentNode != null || !stack.isEmpty()) {
+//            while (currentNode != null) {
+//                stack.push(currentNode);
+//                currentNode = currentNode.leftChild;
+//            }
+//            if (!stack.isEmpty()) {
+//                currentNode = stack.pop();
+//                System.out.print(currentNode.value + " ");
+//                currentNode = currentNode.rightChild;
+//            }
+//        }
     }
 }
