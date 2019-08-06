@@ -1,4 +1,4 @@
-package com.khch.datastructure.leetcode;
+package com.khch.datastructure.practice.leetcode;
 
 /**
  * 这道题的解法并没有达到要求的log(m+n)

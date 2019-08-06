@@ -1,4 +1,4 @@
-package com.khch.datastructure.leetcode;
+package com.khch.datastructure.practice.leetcode;
 
 public class BinarySearch704 {
     public static void main(String[] args) {

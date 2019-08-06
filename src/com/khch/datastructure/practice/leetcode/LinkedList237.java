@@ -1,4 +1,4 @@
-package com.khch.datastructure.leetcode;
+package com.khch.datastructure.practice.leetcode;
 
 /**
  * delete node in a linked list

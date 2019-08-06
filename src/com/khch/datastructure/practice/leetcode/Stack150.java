@@ -1,4 +1,4 @@
-package com.khch.datastructure.leetcode;
+package com.khch.datastructure.practice.leetcode;
 
 import java.util.Stack;
 
