@@ -23,5 +23,7 @@ public class BSTreeDisplayManager {
         System.out.println();
         binarySearchTree.posOrderDFS();
         System.out.println();
+        binarySearchTree.hierarchicalOrder();
+        System.out.println();
     }
 }

@@ -1,5 +1,6 @@
 package com.khch.datastructure.tree.binarysearch;
 
+import java.util.LinkedList;
 import java.util.Stack;
 
 public class BinarySearchTree {
@@ -278,5 +279,21 @@ public class BinarySearchTree {
                 && bsTreeNode.rightChild == null)
                 || (bsTreeNode.leftChild == null
                 && bsTreeNode.rightChild != null && bsTreeNode.rightChild.isVisited);
+    }
+
+    public void hierarchicalOrder() {
+        LinkedList<BSTreeNode> queue = new LinkedList<>();
+        BSTreeNode current = root;
+        queue.push(current);
+        while (!queue.isEmpty()) {
+            current = queue.poll();
+            System.out.print(current.value + " ");
+            if (current.leftChild != null) {
+                queue.offer(current.leftChild);
+            }
+            if (current.rightChild != null) {
+                queue.offer(current.rightChild);
+            }
+        }
     }
 }
