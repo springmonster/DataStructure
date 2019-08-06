@@ -1,5 +1,6 @@
 package com.khch.datastructure.tree.binarysearch;
 
+import java.util.LinkedList;
 import java.util.Stack;
 
 public class BinarySearchTree {
@@ -243,19 +244,56 @@ public class BinarySearchTree {
         }
     }
 
-    public void posOrderDFS(BSTreeNode bsTreeNode) {
-//        Stack<BSTreeNode> stack = new Stack<>();
-//        BSTreeNode currentNode = root;
-//        while (currentNode != null || !stack.isEmpty()) {
-//            while (currentNode != null) {
-//                stack.push(currentNode);
-//                currentNode = currentNode.leftChild;
-//            }
-//            if (!stack.isEmpty()) {
-//                currentNode = stack.pop();
-//                System.out.print(currentNode.value + " ");
-//                currentNode = currentNode.rightChild;
-//            }
-//        }
+    public void posOrderDFS() {
+        Stack<BSTreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            BSTreeNode bsTreeNode = stack.peek();
+            if (bsTreeNode.rightChild == null && bsTreeNode.leftChild == null) {
+                BSTreeNode bsTreeNode1 = stack.pop();
+                System.out.print(bsTreeNode1.value + " ");
+                bsTreeNode1.isVisited = true;
+            } else {
+                if (bsTreeNode.rightChild != null && !bsTreeNode.rightChild.isVisited) {
+                    stack.push(bsTreeNode.rightChild);
+                }
+                if (bsTreeNode.leftChild != null && !bsTreeNode.leftChild.isVisited) {
+                    stack.push(bsTreeNode.leftChild);
+                }
+                if (isChildrenVisited(bsTreeNode)) {
+                    BSTreeNode bsTreeNode1 = stack.pop();
+                    System.out.print(bsTreeNode1.value + " ");
+                    bsTreeNode1.isVisited = true;
+                }
+            }
+        }
+    }
+
+    private boolean isChildrenVisited(BSTreeNode bsTreeNode) {
+        // 左右不为空，visited都为true
+        // 左不为空右为空，visited为true
+        // 左为空右不为空，visited为true
+        return (bsTreeNode.leftChild != null && bsTreeNode.leftChild.isVisited
+                && bsTreeNode.rightChild != null && bsTreeNode.rightChild.isVisited)
+                || (bsTreeNode.leftChild != null && bsTreeNode.leftChild.isVisited
+                && bsTreeNode.rightChild == null)
+                || (bsTreeNode.leftChild == null
+                && bsTreeNode.rightChild != null && bsTreeNode.rightChild.isVisited);
+    }
+
+    public void hierarchicalOrder() {
+        LinkedList<BSTreeNode> queue = new LinkedList<>();
+        BSTreeNode current = root;
+        queue.push(current);
+        while (!queue.isEmpty()) {
+            current = queue.poll();
+            System.out.print(current.value + " ");
+            if (current.leftChild != null) {
+                queue.offer(current.leftChild);
+            }
+            if (current.rightChild != null) {
+                queue.offer(current.rightChild);
+            }
+        }
     }
 }
