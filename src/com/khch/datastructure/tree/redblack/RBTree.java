@@ -4,89 +4,160 @@ package com.khch.datastructure.tree.redblack;
  * 不允许插入相同的数据
  */
 public class RBTree {
-    private RBNode root;
-    private RBNode currentNode;
-    private RBNode currentParentNode;
-    private RBNode currentParentParentNode;
-    private boolean isLeft;
+    public RBNode root;
 
     public void insert(int value) {
         RBNode rbNode = new RBNode();
+        rbNode.isRed = true;
         rbNode.value = value;
 
-        if (root == null) {
-            rbNode.isRed = false;
-            root = rbNode;
-        } else {
-            // 如果左右孩子都不为空
-            currentNode = root;
-
-            if (currentNode.leftChild != null && currentNode.rightChild != null) {
-                if (currentNode.leftChild.isRed && currentNode.rightChild.isRed) {
-                    currentNode.leftChild.isRed = false;
-                    currentNode.rightChild.isRed = false;
-                    currentNode.isRed = currentNode != root;
-                }
-                while (currentNode != null) {
-                    if (value < currentNode.value) {
-                        currentParentParentNode = currentParentNode;
-                        currentParentNode = currentNode;
-                        currentNode = currentNode.leftChild;
-                        isLeft = true;
-                    } else {
-                        currentParentParentNode = currentParentNode;
-                        currentParentNode = currentNode;
-                        currentNode = currentNode.rightChild;
-                        isLeft = false;
-                    }
-                }
-                if (isLeft) {
-                    currentParentNode.leftChild = rbNode;
-                    currentNode = rbNode;
-                    if (!currentParentNode.isRed) {
-                        // 不需要变换颜色
-                    }
-                } else {
-                    currentParentNode.rightChild = rbNode;
-                    currentNode = rbNode;
-                    if (!currentParentNode.isRed) {
-                        // 不需要变换颜色
-                    }
-                }
-            } else if (currentNode.leftChild == null && currentNode.rightChild == null) {
-                // 说明是根节点
-                if (value < currentNode.value) {
-                    currentNode.leftChild = rbNode;
-                } else {
-                    currentNode.rightChild = rbNode;
-                }
-            } else if (currentNode.leftChild != null && currentNode.rightChild == null) {
-                if (value > currentNode.value) {
-                    currentNode.rightChild = rbNode;
-                } else {
-
-                }
-            } else if (currentNode.leftChild == null && currentNode.rightChild != null) {
-                if (value < currentNode.value) {
-                    currentNode.leftChild = rbNode;
-                }
+        RBNode currentParent = null;
+        RBNode current = root;
+        while (current != null) {
+            currentParent = current;
+            if (rbNode.compareTo(current) < 0) {
+                current = current.leftChild;
+            } else {
+                current = current.rightChild;
             }
         }
+        if (currentParent == null) {
+            root = rbNode;
+        } else {
+            if (rbNode.compareTo(currentParent) < 0) {
+                rbNode.parent = currentParent;
+                currentParent.leftChild = rbNode;
+            } else {
+                rbNode.parent = currentParent;
+                currentParent.rightChild = rbNode;
+            }
+        }
+
+        insertFixUp(rbNode);
     }
 
-    private void llRotate() {
+    private void insertFixUp(RBNode rbNode) {
+        RBNode parent, grandParent;
+        parent = rbNode.parent;
+        while (parent != null && parent.isRed) {
+            grandParent = parent.parent;
 
+            if (parent == grandParent.leftChild) {
+                RBNode uncle = grandParent.rightChild;
+                // 两个子节点都为红色
+                if (uncle != null && uncle.isRed) {
+                    uncle.isRed = false;
+                    parent.isRed = false;
+                    grandParent.isRed = true;
+                    rbNode = grandParent;
+                    parent = rbNode.parent;
+                    continue;
+                }
+                // 为右子节点
+                if (parent.rightChild == rbNode) {
+                    llRotate(parent);
+                    RBNode tmp = parent;
+                    parent = rbNode;
+                    rbNode = tmp;
+                }
+                // 为左子节点
+                parent.isRed = false;
+                grandParent.isRed = true;
+                rrRotate(grandParent);
+            } else {
+                RBNode uncle = grandParent.leftChild;
+                // 两个子节点都为红色
+                if (uncle != null && uncle.isRed) {
+                    uncle.isRed = false;
+                    parent.isRed = false;
+                    grandParent.isRed = true;
+                    rbNode = grandParent;
+                    parent = rbNode.parent;
+                    continue;
+                }
+                // 为左子节点
+                if (parent.leftChild == rbNode) {
+                    rrRotate(parent);
+                    RBNode tmp = parent;
+                    parent = rbNode;
+                    rbNode = tmp;
+                }
+                // 为右子节点
+                parent.isRed = false;
+                grandParent.isRed = true;
+                llRotate(grandParent);
+            }
+        }
+
+        root.isRed = false;
     }
 
-    private void rrRotate() {
+    /*
+     * 对红黑树的节点(x)进行左旋转
+     *
+     * 左旋示意图(对节点x进行左旋)：
+     *      px                              px
+     *     /                               /
+     *    x                               y
+     *   /  \      --(左旋)-.           / \                #
+     *  lx   y                          x  ry
+     *     /   \                       /  \
+     *    ly   ry                     lx  ly
+     *
+     *
+     */
+    private void llRotate(RBNode x) {
+        RBNode y = x.rightChild;
+        x.rightChild = y.leftChild;
+        if (y.leftChild != null) {
+            y.leftChild.parent = x;
+        }
+        y.parent = x.parent;
 
+        if (x.parent == null) {
+            root = y;
+        } else {
+            if (x.parent.leftChild == x) {
+                x.parent.leftChild = y;
+            } else {
+                x.parent.rightChild = y;
+            }
+        }
+        y.leftChild = x;
+        x.parent = y;
     }
 
-    private void lrRotate() {
-
-    }
-
-    private void rlRotate() {
+    /*
+     * 对红黑树的节点(y)进行右旋转
+     *
+     * 右旋示意图(对节点y进行左旋)：
+     *            py                               py
+     *           /                                /
+     *          y                                x
+     *         /  \      --(右旋)-.            /  \                     #
+     *        x   ry                           lx   y
+     *       / \                                   / \                   #
+     *      lx  rx                                rx  ry
+     *
+     */
+    private void rrRotate(RBNode y) {
+        RBNode x = y.leftChild;
+        y.leftChild = x.rightChild;
+        if (x.rightChild != null) {
+            x.rightChild.parent = y;
+        }
+        x.parent = y.parent;
+        if (y.parent == null) {
+            root = x;
+        } else {
+            if (y == y.parent.leftChild) {
+                y.parent.leftChild = x;
+            } else {
+                y.parent.rightChild = x;
+            }
+        }
+        x.rightChild = y;
+        y.parent = x;
     }
 
     public void display() {
