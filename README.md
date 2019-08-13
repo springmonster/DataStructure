@@ -80,7 +80,11 @@
 - 最小生成树
   - 普利姆（Prim）
   - 克鲁斯卡尔（Kruskal）
-
+- 最短路径
+  - Floyd-Warshall
+  - Dijkstra
+  - Bellman-Ford（解决负边权）
+  
 ## 字符串
 
 - todo
@@ -89,6 +93,4 @@
 
 - 位图
 - 异或运算
-- BFS
-- DFS
 
