@@ -2,19 +2,25 @@ package com.charles.tree.avl;
 
 public class AvlTreeManager {
 
+    // 3,2,1,4,5,6,7,10,9,8
+    // 3,2,1,4,6,7,10,9,8
     public static void main(String[] args) {
         AvlTree avlTree = new AvlTree();
         avlTree.insert(3);
         avlTree.insert(2);
         avlTree.insert(1);
         avlTree.insert(4);
-        avlTree.insert(5);
+//        avlTree.insert(5);
         avlTree.insert(6);
         avlTree.insert(7);
         avlTree.insert(10);
         avlTree.insert(9);
         avlTree.insert(8);
 
+        avlTree.preOrderDisplay();
+        avlTree.inOrderDisplay();
+
+        avlTree.delete(4);
         avlTree.preOrderDisplay();
         avlTree.inOrderDisplay();
     }
@@ -55,7 +61,7 @@ class AvlTree {
 
     AvlNode balance(AvlNode node) {
         if (node == null) {
-            return node;
+            return null;
         }
 
         if (height(node.left) - height(node.right) > MAX_BALANCE) {
@@ -84,6 +90,56 @@ class AvlTree {
         } else {
             return avlNode.height;
         }
+    }
+
+    void delete(int value) {
+        root = delete(root, value);
+    }
+
+    AvlNode delete(AvlNode node, int value) {
+        if (node == null) {
+            return null;
+        }
+
+        if (value < node.value) {
+            node.left = delete(node.left, value);
+        } else if (value > node.value) {
+            node.right = delete(node.right, value);
+        } else {
+            if (node.left != null && node.right != null) {
+                AvlNode minInMaxNode = node.right;
+                AvlNode minInMaxParentNode = minInMaxNode;
+
+                while (minInMaxNode.left != null) {
+                    minInMaxParentNode = minInMaxNode;
+                    minInMaxNode = minInMaxParentNode.left;
+                }
+
+                minInMaxNode.right = removeMin(node.right);
+                minInMaxNode.left = node.left;
+
+                node = minInMaxNode;
+            } else {
+                if (node.left != null && node.right == null) {
+                    node = node.left;
+                } else if (node.right != null && node.left == null) {
+                    node = node.right;
+                } else {
+                    node = null;
+                }
+            }
+            node.height = Integer.max(height(node.left), height(node.right)) + 1;
+        }
+        return balance(node);
+    }
+
+    AvlNode removeMin(AvlNode node) {
+        if (node.left == null) {
+            return node.right;
+        } else {
+            node.left = removeMin(node.left);
+        }
+        return balance(node);
     }
 
     /**
