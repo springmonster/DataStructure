@@ -1,6 +1,10 @@
 package com.interview.reflect;
 
 public class Robot {
+    static {
+        System.out.println("Hello Robot");
+    }
+
     private String name;
 
     private String sayHello(String tag) {
