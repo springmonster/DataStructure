@@ -1,5 +1,8 @@
 package com._2020.sort;
 
+/**
+ * 有些问题
+ */
 public class HeapSort2020 {
     //    private static int[] array = new int[]{10, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
     private static int[] array = new int[]{54, 26, 93, 17, 77, 31, 60, 55, 20};
