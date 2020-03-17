@@ -8,7 +8,7 @@ package com.khch.datastructure.advancedsort;
  * 4. 尾递归优化？
  */
 public class QuickSort {
-    private static int[] array = new int[]{54, 26, 93, 17, 77, 31, 60, 55, 20};
+    private static int[] array = new int[]{54, 26, 93, 17, 77, 31, 60, 55, 20, 20};
 
     public static void main(String[] args) {
         quickSort(0, array.length - 1);
@@ -27,12 +27,12 @@ public class QuickSort {
         int index = low;
         int value = array[index];
         while (low < high) {
-            while (value < array[high] && low < high) {
+            while (value <= array[high] && low < high) {
                 high--;
             }
             swap(index, high);
             index = high;
-            while (value > array[low] && low < high) {
+            while (value >= array[low] && low < high) {
                 low++;
             }
             swap(index, low);
