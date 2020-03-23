@@ -18,8 +18,8 @@ public class SkipList {
         random = new Random();
         head = new SkipListNode(HEAD_VALUE);
         tail = new SkipListNode(TAIL_VALUE);
-        head.next = tail;
-        tail.pre = head;
+        head.right = tail;
+        tail.left = head;
         size = 0;
         maxLevels = 0;
     }
@@ -33,15 +33,10 @@ public class SkipList {
     }
 
     public void put(int value) {
-        SkipListNode node = findNode(value);
+        SkipListNode leftNodeOfInsertedNode = findLeftNodeOfInsertNode(value);
 
-        if (value == node.value) {
-            node.value = value;
-            return;
-        }
-
-        SkipListNode newNode = new SkipListNode(value);
-        insertNode(node, newNode);
+        SkipListNode insertedNode = new SkipListNode(value);
+        insertNode(leftNodeOfInsertedNode, insertedNode);
 
         int currentLevel = 0;
         while (random.nextDouble() < PROBABILITY) {
@@ -49,8 +44,8 @@ public class SkipList {
                 maxLevels++;
                 SkipListNode headNode = new SkipListNode(HEAD_VALUE);
                 SkipListNode tailNode = new SkipListNode(TAIL_VALUE);
-                headNode.next = tailNode;
-                tailNode.pre = headNode;
+                headNode.right = tailNode;
+                tailNode.left = headNode;
                 headNode.down = head;
                 tailNode.down = tail;
                 head.up = headNode;
@@ -60,28 +55,29 @@ public class SkipList {
             }
 
             //将p移动到上一层
-            while (node.up == null) {
-                node = node.pre;
+            while (leftNodeOfInsertedNode.up == null) {
+                leftNodeOfInsertedNode = leftNodeOfInsertedNode.left;
             }
-            node = node.up;
+            leftNodeOfInsertedNode = leftNodeOfInsertedNode.up;
 
-            SkipListNode highLevelNode = new SkipListNode(value);//只保存key就ok
-            insertNode(node, highLevelNode);//将highLevelNode插入到node的后面
-            //将e和q上下连接
-            highLevelNode.down = newNode;
-            newNode.up = highLevelNode;
-            newNode = highLevelNode;
+            SkipListNode highLevelNode = new SkipListNode(value);
+            //将highLevelNode插入到node的后面
+            insertNode(leftNodeOfInsertedNode, highLevelNode);
+            //将上层节点和下层节点上下连接
+            highLevelNode.down = insertedNode;
+            insertedNode.up = highLevelNode;
+            insertedNode = highLevelNode;
             currentLevel++;
         }
 
         size++;
     }
 
-    private SkipListNode findNode(int value) {
+    private SkipListNode findLeftNodeOfInsertNode(int value) {
         SkipListNode node = head;
         while (true) {
-            while (node.next != null && node.next.value <= value) {
-                node = node.next;
+            while (node.right != null && node.right.value <= value) {
+                node = node.right;
             }
             if (node.down != null) {
                 node = node.down;
@@ -92,11 +88,11 @@ public class SkipList {
         return node;
     }
 
-    private void insertNode(SkipListNode oldNode, SkipListNode newNode) {
-        newNode.next = oldNode.next;
-        newNode.pre = oldNode;
-        oldNode.next.pre = newNode;
-        oldNode.next = newNode;
+    private void insertNode(SkipListNode leftNodeOfInsertedNode, SkipListNode insertedNode) {
+        insertedNode.right = leftNodeOfInsertedNode.right;
+        insertedNode.left = leftNodeOfInsertedNode;
+        leftNodeOfInsertedNode.right.left = insertedNode;
+        leftNodeOfInsertedNode.right = insertedNode;
     }
 
     @Override
@@ -110,18 +106,10 @@ public class SkipList {
             p = p.down;
         }
 
-        while (p.pre != null) {
-            p = p.pre;
-        }
-
-        if (p.next != null) {
-            p = p.next;
-        }
-
-        while (p.next != null) {
+        while (p.right != null) {
             builder.append(p);
             builder.append("\n");
-            p = p.next;
+            p = p.right;
         }
 
         return builder.toString();
