@@ -1,4 +1,4 @@
-package com._2020.swordoffer;
+package com._2020.leetcode.swordoffer;
 
 import java.util.LinkedList;
 

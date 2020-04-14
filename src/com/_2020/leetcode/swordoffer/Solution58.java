@@ -1,4 +1,4 @@
-package com._2020.swordoffer;
+package com._2020.leetcode.swordoffer;
 
 public class Solution58 {
     static String s = "lrloseumgh";
